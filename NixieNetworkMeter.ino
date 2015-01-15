@@ -16,25 +16,28 @@
  */
 
 int upLeftPins [] = {
-  0,0,0,0};//LSB to MSB
+  3,4,5,2};//LSB to MSB
 int upRightPins [] = {
-  0,0,0,0};
+  8,7,6,9};
 int downLeftPins [] = {
   0,0,0,0};
 int downRightPins [] = {
   0,0,0,0};
 
 const int downLedPin = 0;
-const int upLedPin = 0;
+const int upLedPin = 10;
 
 
 void setup() {
   Serial.begin(9600); 
-  
+
   setupBCDPins(upLeftPins);
   setupBCDPins(upRightPins);
   setupBCDPins(downLeftPins);
   setupBCDPins(downRightPins);
+
+  pinMode(upLedPin, OUTPUT);
+  digitalWrite(upLedPin, HIGH);
 }
 
 void setupBCDPins(int bcdPins[4]){
@@ -45,7 +48,23 @@ void setupBCDPins(int bcdPins[4]){
 }
 
 void loop() {
+  if (Serial.available() > 0) {
+    /*if(Serial.read() == '!'){
+     int up = Serial.read();
+     Serial.println(up);
+     if(Serial.read() == '_'){
+     int down = Serial.read();
+     Serial.println(up);
+     Serial.println(down);*/
+     
+    int incoming = Serial.parseInt();
+    Serial.print("incoming: ");
+    Serial.println(incoming);
+    setNixie(upLeftPins, upRightPins, incoming);
+    
+    
 
+  }
 }
 
 void setNixie(int bcdPinsLeft[],int bcdPinsRight[], int number) {
@@ -57,22 +76,26 @@ void setNixie(int bcdPinsLeft[],int bcdPinsRight[], int number) {
   if(number >= 10){
     left = number / 10;
   }
-  
-  digitalWrite(bcdPinsLeft[0], HIGH && (left & B00001000));
-  digitalWrite(bcdPinsLeft[1], HIGH && (left & B00000100));
-  digitalWrite(bcdPinsLeft[2], HIGH && (left & B00000010));
-  digitalWrite(bcdPinsLeft[3], HIGH && (left & B00000001));
-  
-  digitalWrite(bcdPinsRight[0], HIGH && (right & B00001000));
-  digitalWrite(bcdPinsRight[1], HIGH && (right & B00000100));
-  digitalWrite(bcdPinsRight[2], HIGH && (right & B00000010));
-  digitalWrite(bcdPinsRight[3], HIGH && (right & B00000001));
-  
-  Serial.println(bcdPinsLeft[3] + " " + bcdPinsLeft[2]+ " " + bcdPinsLeft[1]+ " " + bcdPinsLeft[0]);
-  Serial.println(bcdPinsRight[3] + " " + bcdPinsRight[2]+ " " + bcdPinsRight[1]+ " " + bcdPinsRight[0]);
-  
-  
+  Serial.print("left: ");
+  Serial.println(left);
+  Serial.print("right: ");
+  Serial.println(right);
+
+  digitalWrite(bcdPinsLeft[3], HIGH && (left & B00001000));
+  digitalWrite(bcdPinsLeft[2], HIGH && (left & B00000100));
+  digitalWrite(bcdPinsLeft[1], HIGH && (left & B00000010));
+  digitalWrite(bcdPinsLeft[0], HIGH && (left & B00000001));
+
+  digitalWrite(bcdPinsRight[3], HIGH && (right & B00001000));
+  digitalWrite(bcdPinsRight[2], HIGH && (right & B00000100));
+  digitalWrite(bcdPinsRight[1], HIGH && (right & B00000010));
+  digitalWrite(bcdPinsRight[0], HIGH && (right & B00000001));
 }
+
+
+
+
+
 
 
 
