@@ -1,6 +1,6 @@
 
 /*
-*|12345|
+ *|12345|
  *|67890|
  *
  *1 = Linke Zahl 4.Byte
@@ -16,16 +16,15 @@
  */
 
 int upLeftPins [] = {
-  3,4,5,2};//LSB to MSB
+  2,3,4,5};//LSB to MSB
 int upRightPins [] = {
-  8,7,6,9};
+  7,9,8,10};
 int downLeftPins [] = {
-  0,0,0,0};
+  11,12,14,15};
 int downRightPins [] = {
-  0,0,0,0};
+ 16,17,18,19};
 
-const int downLedPin = 0;
-const int upLedPin = 10;
+const int LedPin = 6;
 
 
 void setup() {
@@ -36,35 +35,38 @@ void setup() {
   setupBCDPins(downLeftPins);
   setupBCDPins(downRightPins);
 
-  pinMode(upLedPin, OUTPUT);
-  digitalWrite(upLedPin, HIGH);
+  pinMode(LedPin, OUTPUT);
+  digitalWrite(LedPin, HIGH);
 }
 
 void setupBCDPins(int bcdPins[4]){
   for(int i=0; i<4; i++){
     pinMode(bcdPins[i], OUTPUT);
-    digitalWrite(i, LOW);
+    digitalWrite(bcdPins[i], LOW);
   }  
 }
 
 void loop() {
-  if (Serial.available() > 0) {
-    /*if(Serial.read() == '!'){
-     int up = Serial.read();
-     Serial.println(up);
-     if(Serial.read() == '_'){
-     int down = Serial.read();
-     Serial.println(up);
-     Serial.println(down);*/
-     
-    int incoming = Serial.parseInt();
-    Serial.print("incoming: ");
-    Serial.println(incoming);
-    setNixie(upLeftPins, upRightPins, incoming);
-    
-    
-
+  for(int i = 0; i < 100; i++){
+    setNixie(downLeftPins, downRightPins, i);
+    setNixie(upLeftPins, upRightPins, i);
+    delay(500);
   }
+  bla();
+}
+
+void bla(){
+
+  digitalWrite(downLeftPins[3], LOW);
+  digitalWrite(downLeftPins[2], LOW);
+  digitalWrite(downLeftPins[1], LOW);
+  digitalWrite(downLeftPins[0], LOW);
+
+  digitalWrite(downRightPins[3], LOW);
+  digitalWrite(downRightPins[2], LOW);
+  digitalWrite(downRightPins[1], LOW);
+  digitalWrite(downRightPins[0], LOW);
+
 }
 
 void setNixie(int bcdPinsLeft[],int bcdPinsRight[], int number) {
